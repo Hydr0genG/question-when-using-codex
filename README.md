@@ -50,6 +50,39 @@ Computer Use 所需的 Chrome 扩展页面：
 我使用的是 Windows 版 Codex 桌面端，目前浏览器控制不可用。请检查 Computer Use 插件、Chrome 插件、浏览器扩展以及相关连接状态，先告诉我问题原因，再帮我完成可以安全执行的修复。涉及删除文件、修改系统级配置或其他高风险操作时，请先征得我的同意。
 ```
 
+## 问题四：Computer Use 可以看到并打开，但使用时报 `node_repl` 错误
+
+### 现象
+
+插件页中能看到并打开 Computer Use，但真正调用时出现 `node_repl kernel exited unexpectedly`。日志还可能包含 `windows sandbox failed: spawn setup refresh`、`请求的操作需要提升` 或 `os error 740`。
+
+`node_repl` 可以通俗理解为 Codex 执行插件代码的 JavaScript 运行环境。这一类错误偏向 Windows 沙盒启动或权限异常，和“插件消失、bundled 缓存文件缺失”不一定是同一个问题，不应直接套用删除插件缓存的办法。
+
+### 处理方法
+
+可以把下面这段提示词复制给 AI，让它先诊断、备份，再根据证据修复：
+
+```text
+我使用的是 Windows 版 Codex Desktop。Computer Use 插件能够看到并打开，但实际使用时报错，关键词可能包括：
+
+- node_repl kernel exited unexpectedly
+- windows sandbox failed: spawn setup refresh
+- codex-windows-sandbox-setup.exe 请求的操作需要提升
+- os error 740
+
+请在 Windows 本机环境中帮我诊断并尽量修复，要求如下：
+
+1. 先检查 Codex、Computer Use、Chrome 插件状态和近期日志，确认根因后再修改；不要一开始就删除目录或改配置。
+2. 区分 Windows 沙盒权限问题和 openai-bundled 插件缓存/文件锁问题，不要混用解决方案。
+3. 修改前备份相关配置，并告诉我备份目录。不要读取、输出或修改 API key、登录 token、auth.json 或无关配置。
+4. 只有日志明确出现 os error 740、请求的操作需要提升或 windows sandbox failed 时，才判断是否需要调整 Windows sandbox 配置；说明修改的作用范围和风险后再执行。
+5. 如果发现 EBUSY、resource busy or locked、plugin_cache_windows_file_lock、os error 5 或 marketplace.json does not exist，则改按 bundled 插件文件锁/缓存损坏方向处理。
+6. 不要强制结束 Codex Desktop 主进程。涉及删除目录、停止进程或修改系统级配置时，先征得我的同意。
+7. 修复后重新验证 node_repl、Computer Use、Chrome 插件和浏览器控制，并汇总：根因证据、备份位置、实际改动、验证结果，以及仍未解决的步骤。
+```
+
+这段提示词根据社区排错方法进行了精简改写，完整背景与原方法见：[LINUX DO：Codex Computer Use 插件无法正常使用解决方案指北](https://linux.do/t/topic/2283790)。社区内容不是官方说明，请根据自己的报错选择对应分支，执行系统修改前务必确认备份。
+
 ## 这次排错得到的经验
 
 遇到类似问题时，我会按下面的顺序处理：
